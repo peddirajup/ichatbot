@@ -50,3 +50,4 @@ six==1.17.0
 tzdata==2025.1
     # via pandas
 azure-storage-blob
+streamlit-extras
