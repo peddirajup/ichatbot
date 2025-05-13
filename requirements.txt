@@ -51,3 +51,4 @@ tzdata==2025.1
     # via pandas
 azure-storage-blob
 streamlit-extras
+streamlit-autorefresh
