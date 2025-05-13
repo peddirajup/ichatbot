@@ -181,51 +181,34 @@ def retrieve_and_generate_response(query_text, retrieved_documents):
 # Example Usage
 
 def main():
-    # Connect to Azure Blob Storage
+   # st.title("ChatBot")
 
     # Generate embeddings for each chunk
     metadata = generate_embeddings(inputText)
 
-    # query_text = inputText #"Where can I find the full list of layout changes and requirements for Phase 1?"
-
-    # while True:
-    #     # for i in range(1000):
-    #     # query_text = input("Query Text: ")
-    #     query_text1 = st.text_input(f"Query Text", key=f"question_input_{i}")
-    #     query_text = str(query_text1)
-    #
-    #     retrieved_documents = hybrid_search(query_text, metadata)
-    #
-    #     # Connect to GPT Model and generate
-    #     GPT_response = retrieve_and_generate_response(query_text, retrieved_documents)
-    #     print("\n \n")
-    #     print("Question  -  ", query_text)
-    #     print("\n")
-    #     print("\n GPT Response -", GPT_response)
-    #     if query_text == "exit":
-    #         print("Chatbot End...")
-    #         break
-    if 'messages' not in st.session_state:
+    # Initialize chat history
+    if "messages" not in st.session_state:
         st.session_state.messages = []
 
+    # Display chat messages from history on app rerun
     for message in st.session_state.messages:
-        st.write(message)
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    user_input = st.text_input("You:", "")
-    retrieved_documents = hybrid_search(user_input, metadata)
+    # React to user input
+    if prompt := st.chat_input("Enter your question:"):
+        # Display user message in chat message container
+        st.chat_message("user").markdown(prompt)
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
-    if st.button('Send') :
-        if user_input:
-            st.session_state.messages.append(f"You : {user_input}")
-            bot_reply = retrieve_and_generate_response(user_input, retrieved_documents)
-            st.session_state.messages.append(f"Bot: {bot_reply}")
-            # Save the metadata (including embeddings) to a new JSON blob
-            st_autorefresh(interval=1000, key="refresh")
-            st.session_state.user_input = ""
-            #  Your Streamlit app code here
-
-
-# st.write("This page will refresh every 10 seconds.")
+        retrieved_documents = hybrid_search(prompt, metadata)
+        response = retrieve_and_generate_response(prompt, retrieved_documents)
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(response)
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 if __name__ == "__main__":
