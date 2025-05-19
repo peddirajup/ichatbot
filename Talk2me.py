@@ -7,7 +7,7 @@ from azure.storage.blob import BlobServiceClient
 import openai
 from streamlit_autorefresh import st_autorefresh
 
-st.title("💬 Chatbot")
+st.title("💬 TX-AMD Chatbot")
 st.caption("🚀 A Streamlit chatbot powered by OpenAI")
 
 # Final Version - API Information removed
